@@ -1,0 +1,2472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Choose Your Experience — Multi-Style Personality &amp; Vibe Hub</title>
+  <style>
+    /* ==========================================================================
+       1. BASE RESET & SHARED UTILITIES
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background-color 0.45s ease, color 0.45s ease;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ==========================================================================
+       2. OPENING PORTAL ('HOW DO YOU WANT TO EXPLORE?')
+       ========================================================================== */
+    .portal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: radial-gradient(circle at 50% 0%, #161926 0%, #090a0f 75%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      overflow-y: auto;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #f8fafc;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    .portal-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .portal-inner {
+      max-width: 1040px;
+      width: 100%;
+      text-align: center;
+      margin: auto;
+    }
+
+    .portal-pill {
+      display: inline-block;
+      padding: 0.35rem 0.95rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #94a3b8;
+      font-size: 0.76rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .portal-heading {
+      font-size: clamp(1.85rem, 4.2vw, 2.9rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      margin-bottom: 0.7rem;
+      color: #ffffff;
+    }
+
+    .portal-sub {
+      color: #94a3b8;
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      max-width: 620px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.6;
+    }
+
+    .portal-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.35rem;
+      text-align: left;
+    }
+
+    .portal-card {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 1.75rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .portal-card:hover {
+      transform: translateY(-6px);
+    }
+
+    /* Portal Card 1: Terminal (Authentic Raw Linux/Termux TTY Palette) */
+    .portal-card[data-mode="terminal"] {
+      background: #0a0a0a;
+      border-color: #333333;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    .portal-card[data-mode="terminal"]:hover {
+      border-color: #ffffff;
+      box-shadow: 0 16px 38px rgba(0, 0, 0, 0.7);
+    }
+    .portal-card[data-mode="terminal"] .p-tag {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+    .portal-card[data-mode="terminal"] h3 { color: #ffffff; }
+    .portal-card[data-mode="terminal"] p { color: #a1a1aa; }
+    .portal-card[data-mode="terminal"] .p-cta { color: #ffffff; }
+
+    /* Portal Card 2: Lo-Fi Sanctuary */
+    .portal-card[data-mode="lofi"] {
+      background: linear-gradient(145deg, #f7f3eb 0%, #ede6d6 100%);
+      border-color: rgba(200, 125, 101, 0.45);
+      font-family: "Georgia", "Times New Roman", serif;
+    }
+    .portal-card[data-mode="lofi"]:hover {
+      border-color: #c87d65;
+      box-shadow: 0 16px 38px rgba(200, 125, 101, 0.28);
+    }
+    .portal-card[data-mode="lofi"] .p-tag {
+      background: rgba(143, 168, 147, 0.25);
+      color: #3b5240;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    .portal-card[data-mode="lofi"] h3 { color: #2e2b26; }
+    .portal-card[data-mode="lofi"] p { color: #575249; }
+    .portal-card[data-mode="lofi"] .p-cta { color: #c87d65; font-weight: 700; }
+
+    /* Portal Card 3: Bento OS */
+    .portal-card[data-mode="bento"] {
+      background: linear-gradient(145deg, #161b22 0%, #0d1117 100%);
+      border-color: rgba(56, 189, 248, 0.28);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .portal-card[data-mode="bento"]:hover {
+      border-color: #38bdf8;
+      box-shadow: 0 16px 38px rgba(56, 189, 248, 0.2);
+    }
+    .portal-card[data-mode="bento"] .p-tag {
+      background: rgba(56, 189, 248, 0.14);
+      color: #38bdf8;
+    }
+    .portal-card[data-mode="bento"] h3 { color: #f8fafc; }
+    .portal-card[data-mode="bento"] p { color: #94a3b8; }
+    .portal-card[data-mode="bento"] .p-cta { color: #38bdf8; }
+
+    .p-tag {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 0.28rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 1.1rem;
+    }
+
+    .portal-card h3 {
+      font-size: 1.38rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .portal-card p {
+      font-size: 0.92rem;
+      line-height: 1.55;
+      margin-bottom: 1.6rem;
+    }
+
+    .p-cta {
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    /* ==========================================================================
+       3. PERSISTENT TOP-RIGHT EXPERIENCE SWITCHER BAR
+       ========================================================================== */
+    .floating-switcher {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 1500;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem;
+      border-radius: 999px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: all 0.25s ease;
+    }
+
+    .sw-btn {
+      appearance: none;
+      border: none;
+      background: transparent;
+      padding: 0.4rem 0.78rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    body[data-experience="terminal"] .floating-switcher {
+      background: rgba(10, 10, 10, 0.96);
+      border: 1px solid #333333;
+      border-radius: 6px;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.75);
+    }
+    body[data-experience="terminal"] .sw-btn {
+      color: #a1a1aa;
+      border-radius: 4px;
+    }
+    body[data-experience="terminal"] .sw-btn.active {
+      background: #ffffff;
+      color: #000000;
+    }
+
+    body[data-experience="lofi"] .floating-switcher {
+      background: rgba(247, 243, 235, 0.92);
+      border: 1px solid rgba(46, 43, 38, 0.2);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      box-shadow: 0 8px 24px rgba(46, 43, 38, 0.12);
+    }
+    body[data-experience="lofi"] .sw-btn {
+      color: #575249;
+    }
+    body[data-experience="lofi"] .sw-btn.active {
+      background: #c87d65;
+      color: #fffaf5;
+    }
+
+    body[data-experience="bento"] .floating-switcher {
+      background: rgba(22, 27, 34, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+    body[data-experience="bento"] .sw-btn {
+      color: #94a3b8;
+    }
+    body[data-experience="bento"] .sw-btn.active {
+      background: #38bdf8;
+      color: #060911;
+    }
+
+    /* ==========================================================================
+       4. EXPERIENCE A: TERMINAL CLI MODE (RAW LINUX / TERMUX TTY)
+       ========================================================================== */
+    body[data-experience="terminal"] {
+      background-color: #000000;
+      color: #ffffff;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    }
+
+    .terminal-shell {
+      min-height: 100vh;
+      width: 100%;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 4.5rem 1.25rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .term-window {
+      flex: 1;
+      background: #0a0a0a;
+      border: 1px solid #333333;
+      border-radius: 8px;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .term-header {
+      background: #0a0a0a;
+      border-bottom: 1px solid #333333;
+      padding: 0.65rem 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: #a1a1aa;
+    }
+
+    .term-dots {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .term-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #333333;
+    }
+
+    .term-dot:nth-child(1) { background: #ef4444; opacity: 0.85; }
+    .term-dot:nth-child(2) { background: #eab308; opacity: 0.85; }
+    .term-dot:nth-child(3) { background: #22c55e; opacity: 0.85; }
+
+    .term-tty-badge {
+      font-size: 0.74rem;
+      color: #a1a1aa;
+      letter-spacing: 0.03em;
+    }
+
+    .term-output {
+      flex: 1;
+      padding: 1.35rem;
+      overflow-y: auto;
+      max-height: 66vh;
+      font-size: clamp(0.84rem, 1.75vw, 0.95rem);
+      line-height: 1.65;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      cursor: text;
+    }
+
+    .term-line {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .term-line.cmd-exec {
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .term-line.question-block {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.03);
+      border-left: 2px solid #ffffff;
+      padding: 0.6rem 0.9rem;
+      margin: 0.35rem 0;
+    }
+
+    .term-line.prompt-hint {
+      color: #a1a1aa;
+    }
+
+    .term-line.user-echo {
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .term-line.ok-msg {
+      color: #22c55e;
+    }
+
+    .term-line.err-msg {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.08);
+      border-left: 2px solid #ef4444;
+      padding: 0.4rem 0.75rem;
+    }
+
+    .term-synthesis-box {
+      border: 1px solid #333333;
+      background: #000000;
+      padding: 1.2rem;
+      margin: 0.65rem 0;
+      border-radius: 6px;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .term-syn-header {
+      color: #ffffff;
+      font-weight: 700;
+      border-bottom: 1px solid #333333;
+      padding-bottom: 0.55rem;
+    }
+
+    .term-syn-para {
+      line-height: 1.68;
+      color: #a1a1aa;
+      white-space: pre-wrap;
+    }
+
+    .term-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      padding: 0.65rem 1.25rem;
+      background: #0a0a0a;
+      border-top: 1px solid #333333;
+    }
+
+    .term-chip {
+      background: #000000;
+      border: 1px solid #333333;
+      color: #a1a1aa;
+      font-family: inherit;
+      font-size: 0.78rem;
+      padding: 0.34rem 0.72rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .term-chip:hover {
+      background: #141414;
+      border-color: #ffffff;
+      color: #ffffff;
+    }
+
+    .term-input-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.85rem 1.25rem;
+      background: #000000;
+      border-top: 1px solid #333333;
+    }
+
+    .term-prompt-symbol {
+      color: #ffffff;
+      font-weight: 700;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .term-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      caret-color: #ffffff;
+      min-width: 0;
+    }
+
+    .term-enter-btn {
+      background: #0a0a0a;
+      color: #ffffff;
+      border: 1px solid #333333;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.45rem 0.9rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .term-enter-btn:hover {
+      background: #1a1a1a;
+      border-color: #ffffff;
+    }
+
+    /* ==========================================================================
+       5. EXPERIENCE B: LO-FI SANCTUARY MODE
+       ========================================================================== */
+    body[data-experience="lofi"] {
+      background-color: #f7f3eb;
+      color: #2e2b26;
+      font-family: "Georgia", "Times New Roman", serif;
+    }
+
+    .lofi-bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+      background: linear-gradient(130deg, #f7f3eb 0%, #f1eadc 52%, #eae3d2 100%);
+    }
+
+    .lofi-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(72px);
+      opacity: 0.58;
+      animation: floatBlob 24s ease-in-out infinite alternate;
+    }
+
+    .lofi-blob.one {
+      width: 48vw;
+      height: 48vw;
+      max-width: 560px;
+      max-height: 560px;
+      background: #d8e2d5;
+      top: -10%;
+      left: -8%;
+    }
+
+    .lofi-blob.two {
+      width: 44vw;
+      height: 44vw;
+      max-width: 520px;
+      max-height: 520px;
+      background: #edd4c6;
+      bottom: -12%;
+      right: -6%;
+      animation-delay: -8s;
+      animation-duration: 28s;
+    }
+
+    .lofi-blob.three {
+      width: 36vw;
+      height: 36vw;
+      max-width: 420px;
+      max-height: 420px;
+      background: #efe3c8;
+      top: 38%;
+      left: 32%;
+      animation-delay: -15s;
+      animation-duration: 32s;
+    }
+
+    @keyframes floatBlob {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(4vw, 3vh) scale(1.08); }
+      100% { transform: translate(-3vw, 5vh) scale(0.95); }
+    }
+
+    #lofi-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .lofi-container {
+      position: relative;
+      z-index: 10;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 4.75rem 1.25rem 5rem;
+    }
+
+    .lofi-audio-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: rgba(255, 252, 246, 0.88);
+      border: 1px solid rgba(46, 43, 38, 0.14);
+      border-radius: 999px;
+      padding: 0.65rem 1.25rem;
+      margin-bottom: 2.25rem;
+      box-shadow: 0 10px 28px rgba(46, 43, 38, 0.06);
+      backdrop-filter: blur(10px);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .lofi-audio-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .lofi-play-btn {
+      background: #c87d65;
+      color: #fffaf5;
+      border: none;
+      border-radius: 999px;
+      padding: 0.5rem 1.1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .lofi-play-btn:hover {
+      background: #b56b54;
+      transform: translateY(-1px);
+    }
+
+    .lofi-play-btn.playing {
+      background: #6f8f74;
+    }
+
+    .lofi-track-info {
+      font-size: 0.84rem;
+      color: #575249;
+    }
+
+    .lofi-volume-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: #6b655b;
+    }
+
+    .lofi-volume-wrap input[type="range"] {
+      accent-color: #c87d65;
+      cursor: pointer;
+      width: 90px;
+    }
+
+    .lofi-track-switcher {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: rgba(46, 43, 38, 0.06);
+      padding: 0.25rem;
+      border-radius: 999px;
+      border: 1px solid rgba(46, 43, 38, 0.12);
+    }
+
+    .lofi-track-btn {
+      appearance: none;
+      border: none;
+      background: transparent;
+      color: #575249;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.34rem 0.75rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .lofi-track-btn:hover {
+      color: #2e2b26;
+    }
+
+    .lofi-track-btn.active {
+      background: #2e2b26;
+      color: #fffaf5;
+    }
+
+    .lofi-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .lofi-kicker {
+      display: inline-block;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #6f8f74;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .lofi-header h1 {
+      font-size: clamp(1.85rem, 4vw, 2.55rem);
+      font-weight: 400;
+      color: #2e2b26;
+      margin-bottom: 0.55rem;
+    }
+
+    .lofi-header p {
+      color: #635d53;
+      font-size: 1rem;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    /* Lo-Fi Step Dots */
+    .lofi-step-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.55rem;
+      margin-bottom: 1.65rem;
+    }
+
+    .lofi-step-dot {
+      appearance: none;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid rgba(46, 43, 38, 0.22);
+      background: rgba(255, 253, 249, 0.8);
+      color: #575249;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .lofi-step-dot.active {
+      background: #2e2b26;
+      color: #f7f3eb;
+      border-color: #2e2b26;
+      transform: scale(1.08);
+    }
+
+    .lofi-step-dot.answered:not(.active) {
+      background: #d8e2d5;
+      border-color: #6f8f74;
+      color: #2e2b26;
+    }
+
+    /* Cozy Active Question Card */
+    .lofi-card {
+      background: rgba(255, 253, 249, 0.92);
+      border: 1px solid rgba(46, 43, 38, 0.12);
+      border-radius: 22px;
+      padding: clamp(1.5rem, 4vw, 2.35rem);
+      box-shadow: 0 14px 36px rgba(46, 43, 38, 0.06);
+      margin-bottom: 1.75rem;
+    }
+
+    .lofi-q-title {
+      font-size: clamp(1.25rem, 2.8vw, 1.55rem);
+      color: #2e2b26;
+      margin-bottom: 1.35rem;
+      line-height: 1.4;
+    }
+
+    .lofi-choices {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .lofi-choice-pill {
+      appearance: none;
+      width: 100%;
+      text-align: left;
+      background: #fcf9f2;
+      border: 1.5px solid rgba(46, 43, 38, 0.14);
+      border-radius: 16px;
+      padding: 1rem 1.2rem;
+      font-family: "Georgia", serif;
+      font-size: 1.02rem;
+      color: #2e2b26;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      transition: all 0.22s ease;
+    }
+
+    .lofi-choice-pill:hover {
+      border-color: #c87d65;
+      background: #fff8f3;
+      transform: translateX(4px);
+    }
+
+    .lofi-choice-pill.selected {
+      background: #f5ebe3;
+      border-color: #c87d65;
+      box-shadow: 0 6px 18px rgba(200, 125, 101, 0.16);
+    }
+
+    .lofi-choice-num {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(200, 125, 101, 0.16);
+      color: #a85c44;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lofi-choice-pill.selected .lofi-choice-num {
+      background: #c87d65;
+      color: #ffffff;
+    }
+
+    /* Lo-Fi Synthesized Reading Card */
+    .lofi-reading-card {
+      background: #fffdf8;
+      border: 1.5px solid #d5cbb8;
+      border-radius: 22px;
+      padding: clamp(1.5rem, 4vw, 2.5rem);
+      box-shadow: 0 20px 45px rgba(46, 43, 38, 0.08);
+    }
+
+    /* ==========================================================================
+       6. EXPERIENCE C: BENTO DARK OS MODE
+       ========================================================================== */
+    body[data-experience="bento"] {
+      background-color: #0d1117;
+      background-image:
+        radial-gradient(circle at 12% 14%, rgba(56, 189, 248, 0.08), transparent 38%),
+        radial-gradient(circle at 88% 82%, rgba(129, 140, 248, 0.08), transparent 38%);
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .bento-shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 4.75rem 1.25rem 4rem;
+    }
+
+    .bento-top-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.15rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .bento-widget {
+      background: rgba(22, 27, 34, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 20px;
+      padding: 1.35rem 1.5rem;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .bento-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #38bdf8;
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+    }
+
+    .bento-clock-val {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .bento-subtext {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-top: 0.25rem;
+    }
+
+    .bento-matrix {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .bento-matrix-cell {
+      flex: 1;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      transition: background 0.3s ease;
+    }
+
+    .bento-matrix-cell.filled {
+      background: #38bdf8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.45);
+    }
+
+    .bento-qa-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.15rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .bento-card {
+      background: rgba(22, 27, 34, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 20px;
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .bento-card h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.4;
+      color: #f1f5f9;
+      margin-bottom: 0.2rem;
+    }
+
+    .bento-choice-tile {
+      appearance: none;
+      width: 100%;
+      text-align: left;
+      background: rgba(13, 17, 23, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 0.78rem 0.95rem;
+      color: #cbd5e1;
+      font-family: inherit;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      transition: all 0.2s ease;
+    }
+
+    .bento-choice-tile:hover {
+      border-color: rgba(56, 189, 248, 0.55);
+      color: #ffffff;
+    }
+
+    .bento-choice-tile.selected {
+      background: rgba(56, 189, 248, 0.14);
+      border-color: #38bdf8;
+      color: #ffffff;
+    }
+
+    .bento-tile-idx {
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      margin-top: 0.08rem;
+    }
+
+    .bento-choice-tile.selected .bento-tile-idx {
+      background: #38bdf8;
+      color: #060911;
+    }
+
+    .bento-reading-card {
+      background: linear-gradient(145deg, rgba(22, 27, 34, 0.95), rgba(13, 17, 23, 0.98));
+      border: 1px solid rgba(56, 189, 248, 0.32);
+      border-radius: 22px;
+      padding: clamp(1.5rem, 3.5vw, 2.35rem);
+    }
+
+    /* ==========================================================================
+       7. SHARED SYNTHESIS READING TYPOGRAPHY & BUTTONS
+       ========================================================================== */
+    .syn-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin: 1rem 0 1.35rem;
+    }
+
+    .syn-badge {
+      padding: 0.32rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    body[data-experience="lofi"] .syn-badge {
+      background: rgba(143, 168, 147, 0.25);
+      color: #2f4634;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body[data-experience="bento"] .syn-badge {
+      background: rgba(56, 189, 248, 0.14);
+      color: #7dd3fc;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .syn-motto {
+      font-style: italic;
+      padding: 0.95rem 1.15rem;
+      border-radius: 14px;
+      margin-bottom: 1.4rem;
+      line-height: 1.55;
+    }
+
+    body[data-experience="lofi"] .syn-motto {
+      background: #f5efe4;
+      border-left: 3px solid #c87d65;
+      color: #4a453d;
+    }
+
+    body[data-experience="bento"] .syn-motto {
+      background: rgba(255, 255, 255, 0.04);
+      border-left: 3px solid #38bdf8;
+      color: #cbd5e1;
+    }
+
+    .syn-paragraphs {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      line-height: 1.75;
+      font-size: 1.02rem;
+    }
+
+    .syn-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(128, 128, 128, 0.2);
+    }
+
+    .action-btn {
+      appearance: none;
+      border-radius: 12px;
+      padding: 0.7rem 1.3rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    body[data-experience="lofi"] .action-btn.primary {
+      background: #2e2b26;
+      color: #f7f3eb;
+      border: 1px solid #2e2b26;
+      border-radius: 999px;
+    }
+    body[data-experience="lofi"] .action-btn.primary:hover {
+      background: #c87d65;
+      border-color: #c87d65;
+    }
+    body[data-experience="lofi"] .action-btn.secondary {
+      background: transparent;
+      color: #575249;
+      border: 1px solid rgba(46, 43, 38, 0.25);
+      border-radius: 999px;
+    }
+
+    body[data-experience="bento"] .action-btn.primary {
+      background: #38bdf8;
+      color: #060911;
+      border: none;
+    }
+    body[data-experience="bento"] .action-btn.primary:hover {
+      background: #7dd3fc;
+    }
+    body[data-experience="bento"] .action-btn.secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    /* ==========================================================================
+       8. TOAST NOTIFICATION
+       ========================================================================== */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 2500;
+      background: #181c28;
+      color: #f8fafc;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      padding: 0.65rem 1.25rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 0.86rem;
+      font-weight: 600;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      transform: translateY(14px);
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body data-experience="bento">
+
+  <!-- ========================================================================
+       1. OPENING PORTAL: 'HOW DO YOU WANT TO EXPLORE?'
+       ======================================================================== -->
+  <div id="portal-overlay" class="portal-overlay" role="dialog" aria-modal="true" aria-labelledby="portal-title">
+    <div class="portal-inner">
+      <span class="portal-pill">1,024 Unique Archetype Combinations</span>
+      <h1 id="portal-title" class="portal-heading">How do you want to explore?</h1>
+      <p class="portal-sub">
+        Pick a world below to answer 5 core questions. Every combination synthesizes a deep psychological &amp; creative profile tailored to your exact pattern.
+      </p>
+
+      <div class="portal-cards">
+        <!-- Card A: Terminal CLI -->
+        <button type="button" class="portal-card" data-mode="terminal">
+          <div>
+            <span class="p-tag">&gt;_ SHELL // INTERACTIVE CLI</span>
+            <h3>Terminal CLI</h3>
+            <p>
+              Execute real shell syntax. Press Enter to boot, inspect options, and submit commands like <code>answer_q1:1</code>.
+            </p>
+          </div>
+          <span class="p-cta">Run mode/terminal &rarr;</span>
+        </button>
+
+        <!-- Card B: Lo-Fi Sanctuary -->
+        <button type="button" class="portal-card" data-mode="lofi">
+          <div>
+            <span class="p-tag">&#9835; WARM // AMBIENT AUDIO</span>
+            <h3>Lo-Fi Sanctuary</h3>
+            <p>
+              Warm oat &amp; sage tones, drifting pastel light, built-in Web Audio Rhodes chords + gentle rain, and tactile choice cards.
+            </p>
+          </div>
+          <span class="p-cta">Enter Lo-Fi Room &rarr;</span>
+        </button>
+
+        <!-- Card C: Bento Dark OS -->
+        <button type="button" class="portal-card" data-mode="bento">
+          <div>
+            <span class="p-tag">&#9638; OS // DARK GLASS</span>
+            <h3>Bento Dark OS</h3>
+            <p>
+              Sleek dark glassmorphism dashboard with live status telemetry, a 5-node progress matrix, and interactive choice tiles.
+            </p>
+          </div>
+          <span class="p-cta">Boot Bento OS &rarr;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       2. PERSISTENT TOP-RIGHT MODE SWITCHER BAR
+       ======================================================================== -->
+  <nav class="floating-switcher" aria-label="Switch Experience Mode">
+    <button type="button" class="sw-btn" data-switch="terminal">Terminal</button>
+    <button type="button" class="sw-btn" data-switch="lofi">Lo-Fi</button>
+    <button type="button" class="sw-btn" data-switch="bento">Bento OS</button>
+  </nav>
+
+  <!-- ========================================================================
+       3. EXPERIENCE A: TERMINAL CLI MODE
+       ======================================================================== -->
+  <section id="view-terminal" class="terminal-shell hidden" aria-label="Terminal CLI Experience">
+    <div class="term-window">
+      <div class="term-header">
+        <div class="term-dots">
+          <span class="term-dot"></span>
+          <span class="term-dot"></span>
+          <span class="term-dot"></span>
+          <span style="margin-left: 0.35rem;">guest@tty1:~/personality-engine — zsh</span>
+        </div>
+        <span class="term-tty-badge">UTF-8 • POSIX</span>
+      </div>
+
+      <!-- Interactive Terminal Output Log -->
+      <div id="term-output" class="term-output" role="log" aria-live="polite"></div>
+
+      <!-- Mobile-Friendly Quick-Fill Command Chips -->
+      <div id="term-chips" class="term-chips"></div>
+
+      <!-- Real Terminal Prompt Bar -->
+      <form id="term-form" class="term-input-row" autocomplete="off">
+        <span class="term-prompt-symbol">guest@portal:~$</span>
+        <input
+          type="text"
+          id="term-input"
+          class="term-input"
+          placeholder="Press Enter to continue..."
+          aria-label="Terminal command input"
+        />
+        <button type="submit" class="term-enter-btn">ENTER</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       4. EXPERIENCE B: LO-FI SANCTUARY MODE
+       ======================================================================== -->
+  <section id="view-lofi" class="hidden" aria-label="Lo-Fi Sanctuary Experience">
+    <div class="lofi-bg-layer" aria-hidden="true">
+      <div class="lofi-blob one"></div>
+      <div class="lofi-blob two"></div>
+      <div class="lofi-blob three"></div>
+    </div>
+    <canvas id="lofi-canvas" aria-hidden="true"></canvas>
+
+    <div class="lofi-container">
+      <!-- Built-in Lo-Fi Background Audio -->
+      <div class="lofi-audio-bar">
+        <div class="lofi-audio-left">
+          <button type="button" id="lofi-audio-toggle" class="lofi-play-btn">
+            <span id="lofi-audio-icon">&#9654;</span>
+            <span id="lofi-audio-label">Play Music</span>
+          </button>
+          <span class="lofi-track-info" id="lofi-status-text">Paused • Lo-Fi Piano &amp; Electric</span>
+        </div>
+
+        <div class="lofi-track-switcher" role="group" aria-label="Select Background Track">
+          <button type="button" class="lofi-track-btn active" data-yt-track="0">Lo-Fi Piano</button>
+          <button type="button" class="lofi-track-btn" data-yt-track="1">8D Deep Focus</button>
+        </div>
+
+        <div class="lofi-volume-wrap">
+          <label for="lofi-volume">Vol</label>
+          <input type="range" id="lofi-volume" min="0" max="1" step="0.02" value="0.55" />
+        </div>
+      </div>
+
+      <header class="lofi-header">
+        <span class="lofi-kicker">Slow Reflection • 5 Questions</span>
+        <h1>Your Quiet Resonance</h1>
+        <p>Choose the option that feels most natural to you. When all 5 are chosen, your full reading unfolds below.</p>
+      </header>
+
+      <!-- Step Navigation Dots -->
+      <div id="lofi-step-dots" class="lofi-step-dots"></div>
+
+      <!-- Active Question Card -->
+      <div id="lofi-question-card" class="lofi-card"></div>
+
+      <!-- Big Synthesized Personality Reading -->
+      <article id="lofi-reading-card" class="lofi-reading-card hidden"></article>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       5. EXPERIENCE C: BENTO DARK OS MODE
+       ======================================================================== -->
+  <section id="view-bento" class="bento-shell hidden" aria-label="Bento Dark OS Experience">
+    <!-- Top Telemetry Widgets -->
+    <div class="bento-top-grid">
+      <div class="bento-widget">
+        <span class="bento-label">System Status</span>
+        <div id="bento-clock" class="bento-clock-val">00:00:00</div>
+        <div id="bento-date" class="bento-subtext">Synthesis Engine Ready</div>
+      </div>
+
+      <div class="bento-widget">
+        <span class="bento-label">5-Node Matrix Progress</span>
+        <div id="bento-progress-text" class="bento-clock-val" style="font-size: 1.45rem;">0 / 5 Nodes Locked</div>
+        <div id="bento-matrix" class="bento-matrix">
+          <div class="bento-matrix-cell"></div>
+          <div class="bento-matrix-cell"></div>
+          <div class="bento-matrix-cell"></div>
+          <div class="bento-matrix-cell"></div>
+          <div class="bento-matrix-cell"></div>
+        </div>
+      </div>
+
+      <div class="bento-widget">
+        <span class="bento-label">Combination Space</span>
+        <div class="bento-clock-val" style="font-size: 1.45rem;">1,024 Paths</div>
+        <div class="bento-subtext">Synthesizes deep archetype insights without echoing inputs</div>
+      </div>
+    </div>
+
+    <!-- 5 Multiple-Choice Bento Cards -->
+    <div id="bento-qa-grid" class="bento-qa-grid"></div>
+
+    <!-- Big Synthesized Personality Reading -->
+    <article id="bento-reading-card" class="bento-reading-card hidden"></article>
+  </section>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ========================================================================
+       6. APPLICATION LOGIC & 1,024-COMBINATION SYNTHESIS ENGINE
+       ======================================================================== -->
+  <script>
+    (function () {
+      "use strict";
+
+      /* ----------------------------------------------------------------------
+         A. MULTIPLE-CHOICE QUESTION BANK (5 Questions, 4 Choices Each)
+         ---------------------------------------------------------------------- */
+      const QUESTIONS = [
+        {
+          id: "q1",
+          prompt: "What drives your deepest curiosity?",
+          choices: [
+            "Deconstructing complex systems & hidden rules",
+            "Crafting atmospheric worlds, aesthetics & soundscapes",
+            "Pushing limits & mastering competitive strategy",
+            "Finding quiet meaning & understanding human nature"
+          ]
+        },
+        {
+          id: "q2",
+          prompt: "How do you recharge when the world gets too loud?",
+          choices: [
+            "Late-night solo deep-dives into a personal project",
+            "Drifting into music, rain textures, or daydreaming",
+            "Optimizing your space, tools, or organizing chaos",
+            "Having one real, unfiltered late-night conversation"
+          ]
+        },
+        {
+          id: "q3",
+          prompt: "What kind of energy do you bring into a room or group?",
+          choices: [
+            "The calm observer who speaks rarely but hits the bullseye",
+            "The quiet architect working behind the scenes",
+            "The adaptable wildcard who shifts vibe to match the moment",
+            "The grounded anchor who keeps everyone steady"
+          ]
+        },
+        {
+          id: "q4",
+          prompt: "When faced with a tough obstacle, what is your instinct?",
+          choices: [
+            "Strip it down to first principles and rebuild from scratch",
+            "Step back, let your subconscious simmer, and find a creative angle",
+            "Improvise with whatever limited resources are right in front of you",
+            "Map out every possible outcome before making a single move"
+          ]
+        },
+        {
+          id: "q5",
+          prompt: "What matters most to you in the long run?",
+          choices: [
+            "Complete autonomy and building things on your own terms",
+            "Leaving behind art, ideas, or vibes that outlast you",
+            "Continuous self-mastery and sharpening your mind",
+            "Deep loyalty and genuine connection with a chosen few"
+          ]
+        }
+      ];
+
+      /* ----------------------------------------------------------------------
+         B. DEEP SYNTHESIS KNOWLEDGE GRAPH (NEVER ECHOES CHOICE TEXT)
+         ---------------------------------------------------------------------- */
+      const SYNTHESIS_MAP = {
+        // Q1 -> Primary Cognitive Title Prefix & Opening Lens
+        q1: [
+          {
+            titlePrefix: "Systems",
+            badge: "Pattern Decoder",
+            opening:
+              "Your mind refuses to take surfaces at face value. Whenever you encounter a complex environment, an unspoken rulebook, or a tangled mechanism, an automatic instinct kicks in to trace its invisible wiring. You experience genuine intellectual electricity when you uncover the underlying architecture that everyone else takes for granted."
+          },
+          {
+            titlePrefix: "Atmospheric",
+            badge: "Sensory Worldbuilder",
+            opening:
+              "You perceive the world through texture, mood, and emotional resonance rather than dry checklists. Whether through sound, visual rhythm, or subtle spatial details, you are wired to curate how a moment feels. Where others see blank space, you sense an unwritten mood waiting to be given form."
+          },
+          {
+            titlePrefix: "Tactical",
+            badge: "Edge Seeker",
+            opening:
+              "Friction does not intimidate you—it sharpens your focus. You possess a natural hunger for high-stakes problem solving, iterative improvement, and testing where your ceiling actually lies. Stagnation feels heavier to you than difficulty, because your curiosity is fueled by momentum and measurable growth."
+          },
+          {
+            titlePrefix: "Introspective",
+            badge: "Subtext Reader",
+            opening:
+              "Your deepest radar is tuned to the human condition—the quiet motives, contradictions, and unspoken truths beneath everyday behavior. You are rarely satisfied with small talk or surface explanations; you want to understand why people become who they are and what gives an experience lasting weight."
+          }
+        ],
+
+        // Q2 -> Restoration & Inner Sanctuary Rhythm
+        q2: [
+          {
+            rhythm: "nocturnal flow states",
+            sanctuaryInsight:
+              "When external noise threatens to scatter your attention, you reclaim your clarity through uninterrupted solitude and self-directed immersion. In those quiet hours when the rest of the world powers down, your concentration locks in, turning solitary focus into your sharpest regenerative fuel."
+          },
+          {
+            rhythm: "ambient drift",
+            sanctuaryInsight:
+              "To recover from overstimulation, you let your mental grip loosen and dissolve into ambient sensory currents. Allowing your thoughts to wander without an agenda acts like a pressure valve, letting subconscious connections surface gently while your nervous system resets."
+          },
+          {
+            rhythm: "structural clarity",
+            sanctuaryInsight:
+              "Your way of quieting mental static is to bring order to your immediate physical or digital environment. By refining your workflows, decluttering friction points, and tuning your instruments, you restore a sense of calm sovereignty over your own headspace."
+          },
+          {
+            rhythm: "high-trust resonance",
+            sanctuaryInsight:
+              "Crowd noise drains you, yet a single honest exchange with someone who truly gets it can recharge you completely. You do not need constant social stimulation—you thrive on rare, unguarded dialogue where masks drop and real thoughts can breathe."
+          }
+        ],
+
+        // Q3 -> Archetype Noun & Social Gravity
+        q3: [
+          {
+            titleNoun: "Observer",
+            badge: "Signal Filter",
+            socialDynamic:
+              "In group dynamics, you operate like a high-precision signal filter. Rather than competing for airtime, you absorb the emotional and strategic undercurrents in the room, saving your voice until a single, well-aimed observation shifts the entire conversation."
+          },
+          {
+            titleNoun: "Architect",
+            badge: "Silent Engine",
+            socialDynamic:
+              "You naturally gravitate toward the engine room rather than the spotlight. People rely on the invisible scaffolding you put in place—the thoughtful preparation, subtle adjustments, and behind-the-scenes foresight that make everything run effortlessly."
+          },
+          {
+            titleNoun: "Catalyst",
+            badge: "Frequency Shifter",
+            socialDynamic:
+              "You carry a rare social fluidity that lets you read the temperature of any circle and calibrate your presence on the fly. Without losing your center, you bridge disconnected personalities and inject unexpected spark whenever a room grows stale."
+          },
+          {
+            titleNoun: "Anchor",
+            badge: "Steady Core",
+            socialDynamic:
+              "Your presence acts as gravitational ballast when things become chaotic or uncertain. Even without raising your voice, your composure signals reliability, giving the people around you permission to steady their breathing and think clearly."
+          }
+        ],
+
+        // Q4 -> Crisis / Problem-Solving Signature
+        q4: [
+          {
+            strategyBadge: "First-Principles Reset",
+            crisisStyle:
+              "When conventional paths hit a wall, you have the courage to tear flawed assumptions down to the bedrock and engineer a cleaner foundation. You refuse to patch a broken model when a fundamental redesign will solve the root cause permanently."
+          },
+          {
+            strategyBadge: "Lateral Incubation",
+            crisisStyle:
+              "Instead of forcing a brute-force breakthrough against a stubborn problem, you know how to step back and let lateral intuition work beneath the surface. Time and again, your sharpest angles arrive sideways when you stop staring directly at the obstacle."
+          },
+          {
+            strategyBadge: "Field Improviser",
+            crisisStyle:
+              "Scarcity and surprise rarely freeze you; in fact, tight constraints tend to unlock your resourcefulness. You excel at turning whatever fragments are within reach into a working solution right in the heat of the moment."
+          },
+          {
+            strategyBadge: "Probabilistic Planner",
+            crisisStyle:
+              "Before committing your energy, you mentally simulate downstream branches, edge cases, and second-order consequences. By thinking three moves ahead, you neutralize avoidable traps long before others even realize a hazard exists."
+          }
+        ],
+
+        // Q5 -> North Star, Shadow Blind-Spot & Motto
+        q5: [
+          {
+            northStar:
+              "At the horizon of everything you do sits a fierce commitment to self-authorship. True success, to you, means owning your time, choosing your standards, and refusing to trade your independence for borrowed approval.",
+            blindSpot:
+              "Watch out for the urge to carry every weight entirely solo—sometimes letting a trusted ally into the blueprint multiplies what you can build without compromising your freedom.",
+            motto: "“Build a world that answers to your own compass, not the crowd’s applause.”"
+          },
+          {
+            northStar:
+              "What drives your long-term compass is cultural and emotional permanence—the desire to shape artifacts, atmospheres, and perspectives that continue speaking long after the moment has passed.",
+            blindSpot:
+              "Be mindful not to wait endlessly for elusive perfection before releasing your work; imperfect creation in the real world always outlives an unshared masterpiece.",
+            motto: "“Leave behind echoes that make strangers feel understood.”"
+          },
+          {
+            northStar:
+              "Your deepest compass points toward relentless evolution—treating your own mind, discipline, and craft as a lifelong whetstone that never stops getting sharper.",
+            blindSpot:
+              "Remember to pause occasionally and inhabit the milestones you have already conquered, rather than immediately treating every summit as just another base camp.",
+            motto: "“Sharpen the blade daily; let mastery be its own quiet reward.”"
+          },
+          {
+            northStar:
+              "Beneath every ambition, your true anchor is depth of bond—investing your fiercest loyalty into an inner circle where trust is earned slowly and kept for life.",
+            blindSpot:
+              "Guard against over-extending your emotional bandwidth for people who have not yet earned a seat at your inner table.",
+            motto: "“Depth over noise; loyalty over spectacle.”"
+          }
+        ]
+      };
+
+      /* ----------------------------------------------------------------------
+         C. SHARED STATE & PERSISTENCE
+         ---------------------------------------------------------------------- */
+      const STORAGE_KEY = "multi_style_personality_hub_v3";
+
+      let state = {
+        experience: "bento",
+        hasChosenPortal: false,
+        lofiActiveStep: 0,
+        answers: [null, null, null, null, null] // stores 0..3 index for q1..q5
+      };
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed.experience) state.experience = parsed.experience;
+            state.hasChosenPortal = Boolean(parsed.hasChosenPortal);
+            if (typeof parsed.lofiActiveStep === "number") {
+              state.lofiActiveStep = Math.min(4, Math.max(0, parsed.lofiActiveStep));
+            }
+            if (Array.isArray(parsed.answers) && parsed.answers.length === 5) {
+              state.answers = parsed.answers.map((v) =>
+                typeof v === "number" && v >= 0 && v <= 3 ? v : null
+              );
+            }
+          }
+        } catch (err) {
+          console.warn("Storage unavailable:", err);
+        }
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (err) {
+          console.warn("Storage write failed:", err);
+        }
+      }
+
+      function allQuestionsAnswered() {
+        return state.answers.every((val) => typeof val === "number" && val >= 0 && val <= 3);
+      }
+
+      function resetAllAnswers() {
+        state.answers = [null, null, null, null, null];
+        state.lofiActiveStep = 0;
+        saveState();
+      }
+
+      /* ----------------------------------------------------------------------
+         D. SYNTHESIS GENERATOR (1,024 UNIQUE PATHS, ZERO RAW ECHOING)
+         ---------------------------------------------------------------------- */
+      function generateSynthesis() {
+        if (!allQuestionsAnswered()) return null;
+
+        const [a1, a2, a3, a4, a5] = state.answers;
+        const s1 = SYNTHESIS_MAP.q1[a1];
+        const s2 = SYNTHESIS_MAP.q2[a2];
+        const s3 = SYNTHESIS_MAP.q3[a3];
+        const s4 = SYNTHESIS_MAP.q4[a4];
+        const s5 = SYNTHESIS_MAP.q5[a5];
+
+        // Unique 4-digit signature code (11111 .. 44444)
+        const signatureCode = `SIG-${a1 + 1}${a2 + 1}${a3 + 1}${a4 + 1}${a5 + 1}`;
+        const archetypeTitle = `The ${s1.titlePrefix} ${s3.titleNoun}`;
+
+        const paragraphs = [
+          `${s1.opening} ${s2.sanctuaryInsight}`,
+          `${s3.socialDynamic} ${s4.crisisStyle}`,
+          `${s5.northStar} Growth Edge: ${s5.blindSpot}`
+        ];
+
+        return {
+          signatureCode,
+          archetypeTitle,
+          badges: [s1.badge, s3.badge, s4.strategyBadge, `Fuel: ${s2.rhythm}`],
+          motto: s5.motto,
+          paragraphs
+        };
+      }
+
+      function formatSynthesisPlainText(syn) {
+        if (!syn) return "";
+        return [
+          `=== ${syn.archetypeTitle.toUpperCase()} (${syn.signatureCode}) ===`,
+          `Traits: ${syn.badges.join(" • ")}`,
+          `Motto: ${syn.motto}`,
+          "",
+          ...syn.paragraphs
+        ].join("\n\n");
+      }
+
+      /* ----------------------------------------------------------------------
+         E. TOAST & CLIPBOARD HELPERS
+         ---------------------------------------------------------------------- */
+      const toastEl = document.getElementById("toast");
+      let toastTimer = null;
+
+      function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
+      }
+
+      function copySynthesisToClipboard() {
+        const syn = generateSynthesis();
+        if (!syn) return;
+        const text = formatSynthesisPlainText(syn);
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          showToast("Profile reading copied to clipboard!");
+        } catch (err) {
+          showToast("Unable to copy automatically.");
+        }
+        document.body.removeChild(ta);
+      }
+
+      /* ----------------------------------------------------------------------
+         F. MODE SWITCHER & PORTAL CONTROLLER
+         ---------------------------------------------------------------------- */
+      const portalOverlay = document.getElementById("portal-overlay");
+      const viewTerminal = document.getElementById("view-terminal");
+      const viewLofi = document.getElementById("view-lofi");
+      const viewBento = document.getElementById("view-bento");
+      const switcherBtns = document.querySelectorAll(".sw-btn");
+
+      function switchExperience(mode, closePortal = true) {
+        if (!["terminal", "lofi", "bento"].includes(mode)) mode = "bento";
+        state.experience = mode;
+        document.body.setAttribute("data-experience", mode);
+
+        switcherBtns.forEach((btn) => {
+          btn.classList.toggle("active", btn.getAttribute("data-switch") === mode);
+        });
+
+        if (closePortal) {
+          state.hasChosenPortal = true;
+          portalOverlay.classList.add("hidden");
+        }
+
+        viewTerminal.classList.add("hidden");
+        viewLofi.classList.add("hidden");
+        viewBento.classList.add("hidden");
+
+        if (mode !== "lofi" && lofiAudio.isPlaying) {
+          lofiAudio.stop();
+        }
+
+        if (mode === "terminal") {
+          viewTerminal.classList.remove("hidden");
+          initTerminalSession();
+        } else if (mode === "lofi") {
+          viewLofi.classList.remove("hidden");
+          renderLofiView();
+          if (closePortal) {
+            lofiAudio.start();
+          }
+        } else if (mode === "bento") {
+          viewBento.classList.remove("hidden");
+          renderBentoView();
+        }
+
+        saveState();
+      }
+
+      document.querySelectorAll(".portal-card").forEach((card) => {
+        card.addEventListener("click", () => {
+          switchExperience(card.getAttribute("data-mode"), true);
+        });
+      });
+
+      switcherBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          switchExperience(btn.getAttribute("data-switch"), true);
+        });
+      });
+
+      /* ----------------------------------------------------------------------
+         G. EXPERIENCE A: TERMINAL CLI ENGINE (EXACT SYNTAX & ERROR HANDLING)
+         ---------------------------------------------------------------------- */
+      const termOutput = document.getElementById("term-output");
+      const termForm = document.getElementById("term-form");
+      const termInput = document.getElementById("term-input");
+      const termChips = document.getElementById("term-chips");
+
+      let termSession = {
+        awaitingEnter: true,
+        currentQIdx: 0,
+        history: [],
+        historyIdx: -1
+      };
+
+      termOutput.addEventListener("click", () => {
+        if (termSession.awaitingEnter) {
+          processTerminalInput("");
+        } else {
+          termInput.focus();
+        }
+      });
+
+      function appendTermLine(text, cls = "") {
+        const div = document.createElement("div");
+        div.className = `term-line ${cls}`.trim();
+        div.textContent = text;
+        termOutput.appendChild(div);
+        termOutput.scrollTop = termOutput.scrollHeight;
+      }
+
+      function getNextUnansweredIdx(start = 0) {
+        for (let i = start; i < QUESTIONS.length; i++) {
+          if (state.answers[i] === null) return i;
+        }
+        for (let i = 0; i < QUESTIONS.length; i++) {
+          if (state.answers[i] === null) return i;
+        }
+        return -1;
+      }
+
+      function renderTerminalChips() {
+        termChips.innerHTML = "";
+        if (termSession.awaitingEnter) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "term-chip";
+          btn.textContent = "[Press Enter]";
+          btn.addEventListener("click", () => processTerminalInput(""));
+          termChips.appendChild(btn);
+          return;
+        }
+
+        const qNum = termSession.currentQIdx + 1;
+        if (!allQuestionsAnswered()) {
+          [1, 2, 3, 4].forEach((opt) => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "term-chip";
+            btn.textContent = `answer_q${qNum}:${opt}`;
+            btn.addEventListener("click", () => {
+              processTerminalInput(`answer_q${qNum}:${opt}`);
+            });
+            termChips.appendChild(btn);
+          });
+        }
+
+        ["help", "restart"].forEach((cmd) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "term-chip";
+          btn.textContent = cmd;
+          btn.addEventListener("click", () => processTerminalInput(cmd));
+          termChips.appendChild(btn);
+        });
+      }
+
+      function displayTerminalQuestion(idx) {
+        termSession.currentQIdx = idx;
+        const q = QUESTIONS[idx];
+        const qNum = idx + 1;
+
+        const blockText = [
+          `q${qNum}; ${q.prompt}`,
+          `      use "answer_q${qNum}:1" to answer as ${q.choices[0]}`,
+          `      use "answer_q${qNum}:2" to answer as ${q.choices[1]}`,
+          `      use "answer_q${qNum}:3" to answer as ${q.choices[2]}`,
+          `      use "answer_q${qNum}:4" to answer as ${q.choices[3]}`
+        ].join("\n");
+
+        appendTermLine(blockText, "question-block");
+        termInput.placeholder = `Type answer_q${qNum}:1 (or 2, 3, 4)...`;
+        renderTerminalChips();
+      }
+
+      function displayTerminalSynthesis() {
+        const syn = generateSynthesis();
+        if (!syn) return;
+
+        appendTermLine("command executed: synthesize_profile()", "cmd-exec");
+
+        const box = document.createElement("div");
+        box.className = "term-synthesis-box";
+
+        const head = document.createElement("div");
+        head.className = "term-syn-header";
+        head.textContent = `[ARCHETYPE UNLOCKED] ${syn.archetypeTitle} // ${syn.signatureCode}\nTraits: ${syn.badges.join(" | ")}\nMotto: ${syn.motto}`;
+        box.appendChild(head);
+
+        syn.paragraphs.forEach((pText) => {
+          const p = document.createElement("div");
+          p.className = "term-syn-para";
+          p.textContent = pText;
+          box.appendChild(p);
+        });
+
+        const btnRow = document.createElement("div");
+        btnRow.style.display = "flex";
+        btnRow.style.gap = "0.6rem";
+        btnRow.style.flexWrap = "wrap";
+
+        const copyBtn = document.createElement("button");
+        copyBtn.type = "button";
+        copyBtn.className = "term-chip";
+        copyBtn.textContent = "[ Copy Profile Reading ]";
+        copyBtn.addEventListener("click", copySynthesisToClipboard);
+
+        const resetBtn = document.createElement("button");
+        resetBtn.type = "button";
+        resetBtn.className = "term-chip";
+        resetBtn.textContent = "[ Try Another Combination (restart) ]";
+        resetBtn.addEventListener("click", () => processTerminalInput("restart"));
+
+        btnRow.appendChild(copyBtn);
+        btnRow.appendChild(resetBtn);
+        box.appendChild(btnRow);
+
+        termOutput.appendChild(box);
+        termOutput.scrollTop = termOutput.scrollHeight;
+        renderTerminalChips();
+      }
+
+      function initTerminalSession() {
+        termOutput.innerHTML = "";
+        termSession.awaitingEnter = true;
+        termSession.currentQIdx = 0;
+
+        appendTermLine("command executed: mode/terminal", "cmd-exec");
+        appendTermLine("press enter to continue", "prompt-hint");
+        termInput.value = "";
+        termInput.placeholder = "Press Enter to continue...";
+        renderTerminalChips();
+        setTimeout(() => termInput.focus(), 50);
+      }
+
+      function processTerminalInput(raw) {
+        const trimmed = raw.trim();
+
+        // Step 1: Initial Enter prompt
+        if (termSession.awaitingEnter) {
+          appendTermLine(`guest@portal:~$ ${trimmed || "[ENTER]"}`, "user-echo");
+          termSession.awaitingEnter = false;
+          appendTermLine("command executed: ask(personality)", "cmd-exec");
+
+          const nextIdx = getNextUnansweredIdx(0);
+          if (nextIdx === -1) {
+            displayTerminalSynthesis();
+          } else {
+            displayTerminalQuestion(nextIdx);
+          }
+          return;
+        }
+
+        if (!trimmed) return;
+
+        termSession.history.push(trimmed);
+        termSession.historyIdx = termSession.history.length;
+        appendTermLine(`guest@portal:~$ ${trimmed}`, "user-echo");
+
+        const lower = trimmed.toLowerCase();
+
+        // Built-in commands: help & restart
+        if (lower === "help") {
+          appendTermLine("Valid Terminal Commands:", "cmd-exec");
+          appendTermLine('  answer_q1:1 .. answer_q5:4   Submit choice (1-4) for the active question');
+          appendTermLine('  restart                     Clear all answers and start over');
+          appendTermLine('  help                        Show this command reference');
+          return;
+        }
+
+        if (lower === "restart") {
+          resetAllAnswers();
+          appendTermLine("[OK] Session reset. All 5 nodes cleared.", "ok-msg");
+          appendTermLine("command executed: ask(personality)", "cmd-exec");
+          displayTerminalQuestion(0);
+          return;
+        }
+
+        // Strict syntax check: answer_q<1-5>:<1-4>
+        const expectedQNum = termSession.currentQIdx + 1;
+        const match = lower.match(/^answer_q([1-5]):([1-4])$/);
+
+        if (!match) {
+          appendTermLine(
+            `[ERR_SYNTAX] Invalid input: "${trimmed}". Expected format: answer_q${expectedQNum}:1 | answer_q${expectedQNum}:2 | answer_q${expectedQNum}:3 | answer_q${expectedQNum}:4 (or type "help" / "restart").`,
+            "err-msg"
+          );
+          return;
+        }
+
+        const qNum = parseInt(match[1], 10);
+        const choiceNum = parseInt(match[2], 10);
+
+        if (!allQuestionsAnswered() && qNum !== expectedQNum) {
+          appendTermLine(
+            `[ERR_SYNTAX] Invalid input: "${trimmed}". Expected format: answer_q${expectedQNum}:1 | answer_q${expectedQNum}:2 | answer_q${expectedQNum}:3 | answer_q${expectedQNum}:4 (or type "help" / "restart").`,
+            "err-msg"
+          );
+          return;
+        }
+
+        // Valid answer!
+        const qIdx = qNum - 1;
+        state.answers[qIdx] = choiceNum - 1;
+        saveState();
+        appendTermLine(`[OK] Recorded selection #${choiceNum} for q${qNum}.`, "ok-msg");
+
+        const nextIdx = getNextUnansweredIdx(qIdx + 1);
+        if (nextIdx === -1) {
+          displayTerminalSynthesis();
+        } else {
+          displayTerminalQuestion(nextIdx);
+        }
+      }
+
+      termForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const val = termInput.value;
+        termInput.value = "";
+        processTerminalInput(val);
+      });
+
+      termInput.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowUp" && termSession.historyIdx > 0) {
+          termSession.historyIdx--;
+          termInput.value = termSession.history[termSession.historyIdx];
+          e.preventDefault();
+        } else if (e.key === "ArrowDown") {
+          if (termSession.historyIdx < termSession.history.length - 1) {
+            termSession.historyIdx++;
+            termInput.value = termSession.history[termSession.historyIdx];
+          } else {
+            termSession.historyIdx = termSession.history.length;
+            termInput.value = "";
+          }
+          e.preventDefault();
+        }
+      });
+
+      /* ----------------------------------------------------------------------
+         H. EXPERIENCE B: LO-FI SANCTUARY (SELF-CONTAINED WEB AUDIO)
+         ---------------------------------------------------------------------- */
+      const TRACKS = [
+        { title: "Lo-Fi Piano & Electric", style: "piano" },
+        { title: "8D Deep Focus", style: "focus" }
+      ];
+
+      const lofiAudio = {
+        context: null,
+        master: null,
+        rainGain: null,
+        rainSource: null,
+        scheduler: null,
+        nextNoteTime: 0,
+        step: 0,
+        isPlaying: false,
+        trackIndex: 0,
+        volume: 0.55,
+        chordIndex: 0,
+
+        ensureAudio() {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContextClass) {
+            lofiStatusText.textContent = "Audio is not supported in this browser";
+            return false;
+          }
+          if (this.context) return true;
+
+          this.context = new AudioContextClass();
+          this.master = this.context.createGain();
+          this.master.gain.value = this.volume;
+          this.master.connect(this.context.destination);
+
+          // Soft filtered rain/noise bed.
+          const bufferSize = this.context.sampleRate * 3;
+          const noiseBuffer = this.context.createBuffer(1, bufferSize, this.context.sampleRate);
+          const data = noiseBuffer.getChannelData(0);
+          let last = 0;
+          for (let i = 0; i < bufferSize; i++) {
+            const white = Math.random() * 2 - 1;
+            last = last * 0.92 + white * 0.08;
+            data[i] = last * 0.65 + white * 0.18;
+          }
+          this.rainSource = this.context.createBufferSource();
+          this.rainSource.buffer = noiseBuffer;
+          this.rainSource.loop = true;
+
+          const rainFilter = this.context.createBiquadFilter();
+          rainFilter.type = "lowpass";
+          rainFilter.frequency.value = 1250;
+          const rainHighpass = this.context.createBiquadFilter();
+          rainHighpass.type = "highpass";
+          rainHighpass.frequency.value = 180;
+          this.rainGain = this.context.createGain();
+          this.rainGain.gain.value = 0.12;
+          this.rainSource.connect(rainFilter);
+          rainFilter.connect(rainHighpass);
+          rainHighpass.connect(this.rainGain);
+          this.rainGain.connect(this.master);
+          this.rainSource.start();
+          return true;
+        },
+
+        playTone(freq, time, duration, opts = {}) {
+          const ctx = this.context;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+          const peak = opts.peak ?? 0.12;
+
+          osc.type = opts.type || "sine";
+          osc.frequency.setValueAtTime(freq, time);
+          filter.type = "lowpass";
+          filter.frequency.setValueAtTime(opts.cutoff || 2400, time);
+
+          gain.gain.setValueAtTime(0.0001, time);
+          gain.gain.exponentialRampToValueAtTime(peak, time + 0.025);
+          gain.gain.exponentialRampToValueAtTime(Math.max(0.0001, peak * 0.42), time + Math.min(0.22, duration * 0.35));
+          gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+
+          osc.connect(filter);
+          filter.connect(gain);
+          gain.connect(this.master);
+          osc.start(time);
+          osc.stop(time + duration + 0.03);
+        },
+
+        scheduleMusic() {
+          if (!this.isPlaying || !this.context) return;
+          const ctx = this.context;
+          const bpm = this.trackIndex === 0 ? 76 : 68;
+          const beat = 60 / bpm;
+          const stepLength = beat / 2;
+          const chords = this.trackIndex === 0
+            ? [[130.81, 164.81, 196.00, 246.94], [110.00, 130.81, 164.81, 196.00], [87.31, 110.00, 130.81, 164.81], [98.00, 123.47, 146.83, 196.00]]
+            : [[110.00, 146.83, 174.61, 220.00], [98.00, 130.81, 164.81, 196.00], [82.41, 110.00, 130.81, 164.81], [92.50, 123.47, 146.83, 185.00]];
+          const melody = [1, 2, 3, 2, 0, 2, 1, 3, 2, 1, 0, 2, 3, 2, 1, 2];
+
+          while (this.nextNoteTime < ctx.currentTime + 0.18) {
+            const t = this.nextNoteTime;
+            const chord = chords[Math.floor(this.step / 16) % chords.length];
+
+            if (this.step % 8 === 0) {
+              chord.forEach((freq, i) => {
+                this.playTone(freq, t, beat * 3.7, {
+                  type: "sine",
+                  peak: i === 0 ? 0.075 : 0.038,
+                  cutoff: 1500
+                });
+                if (i > 0) {
+                  this.playTone(freq * 2, t + 0.012, beat * 2.4, {
+                    type: "triangle",
+                    peak: 0.012,
+                    cutoff: 2100
+                  });
+                }
+              });
+              this.playTone(chord[0] / 2, t, beat * 1.7, {
+                type: "triangle",
+                peak: 0.045,
+                cutoff: 500
+              });
+            }
+
+            if (this.step % 2 === 0) {
+              const note = chord[melody[this.step % melody.length]];
+              this.playTone(note * 2, t, beat * 0.8, {
+                type: "sine",
+                peak: this.trackIndex === 0 ? 0.055 : 0.028,
+                cutoff: 3000
+              });
+            }
+
+            this.step++;
+            this.nextNoteTime += stepLength;
+          }
+        },
+
+        start() {
+          if (!this.ensureAudio()) return;
+          this.isPlaying = true;
+          this.context.resume().then(() => {
+            if (!this.isPlaying) return;
+            this.nextNoteTime = this.context.currentTime + 0.06;
+            this.step = 0;
+            this.rainGain.gain.setTargetAtTime(0.12, this.context.currentTime, 0.3);
+            if (this.scheduler) clearInterval(this.scheduler);
+            this.scheduler = setInterval(() => this.scheduleMusic(), 80);
+            this.scheduleMusic();
+            updateLofiAudioUI();
+          }).catch(() => {
+            this.isPlaying = false;
+            lofiStatusText.textContent = "Tap Play Music to enable audio";
+            updateLofiAudioUI();
+          });
+        },
+
+        stop() {
+          this.isPlaying = false;
+          if (this.scheduler) {
+            clearInterval(this.scheduler);
+            this.scheduler = null;
+          }
+          if (this.context && this.rainGain) {
+            this.rainGain.gain.setTargetAtTime(0.0001, this.context.currentTime, 0.12);
+          }
+          updateLofiAudioUI();
+        },
+
+        selectTrack(idx) {
+          if (idx < 0 || idx >= TRACKS.length) return;
+          const wasPlaying = this.isPlaying;
+          this.trackIndex = idx;
+          document.querySelectorAll(".lofi-track-btn").forEach((btn) => {
+            btn.classList.toggle("active", Number(btn.getAttribute("data-yt-track")) === idx);
+          });
+          if (wasPlaying) this.start();
+          updateLofiAudioUI();
+        },
+
+        setVolume(value) {
+          this.volume = Math.max(0, Math.min(1, value));
+          if (this.context && this.master) {
+            this.master.gain.setTargetAtTime(this.volume, this.context.currentTime, 0.04);
+          }
+        }
+      };
+
+      const lofiAudioToggle = document.getElementById("lofi-audio-toggle");
+      const lofiAudioIcon = document.getElementById("lofi-audio-icon");
+      const lofiAudioLabel = document.getElementById("lofi-audio-label");
+      const lofiStatusText = document.getElementById("lofi-status-text");
+      const lofiVolume = document.getElementById("lofi-volume");
+
+      function updateLofiAudioUI() {
+        const track = TRACKS[lofiAudio.trackIndex];
+        if (lofiAudio.isPlaying) {
+          lofiAudioToggle.classList.add("playing");
+          lofiAudioIcon.textContent = "Ⅱ";
+          lofiAudioLabel.textContent = "Pause Music";
+          lofiStatusText.textContent = `Playing • ${track.title}`;
+        } else {
+          lofiAudioToggle.classList.remove("playing");
+          lofiAudioIcon.textContent = "▶";
+          lofiAudioLabel.textContent = "Play Music";
+          lofiStatusText.textContent = `Paused • ${track.title}`;
+        }
+      }
+
+      lofiAudioToggle.addEventListener("click", () => {
+        if (lofiAudio.isPlaying) lofiAudio.stop();
+        else lofiAudio.start();
+      });
+
+      document.querySelectorAll(".lofi-track-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          lofiAudio.selectTrack(Number(btn.getAttribute("data-yt-track")));
+        });
+      });
+
+      lofiVolume.addEventListener("input", (e) => {
+        lofiAudio.setVolume(parseFloat(e.target.value));
+      });
+
+      // Floating Dust Motes Canvas for Lo-Fi Mode
+      function initLofiCanvas() {
+        const canvas = document.getElementById("lofi-canvas");
+        const ctx = canvas.getContext("2d");
+        let w = (canvas.width = window.innerWidth);
+        let h = (canvas.height = window.innerHeight);
+
+        window.addEventListener("resize", () => {
+          w = canvas.width = window.innerWidth;
+          h = canvas.height = window.innerHeight;
+        });
+
+        const motes = Array.from({ length: 28 }, () => ({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r: Math.random() * 3.5 + 1.5,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: -Math.random() * 0.25 - 0.08,
+          color: Math.random() > 0.5 ? "rgba(200, 125, 101, 0.24)" : "rgba(143, 168, 147, 0.28)"
+        }));
+
+        function animate() {
+          if (state.experience === "lofi") {
+            ctx.clearRect(0, 0, w, h);
+            motes.forEach((m) => {
+              m.x += m.vx;
+              m.y += m.vy;
+              if (m.y < -10) {
+                m.y = h + 10;
+                m.x = Math.random() * w;
+              }
+              if (m.x < -10) m.x = w + 10;
+              if (m.x > w + 10) m.x = -10;
+
+              ctx.beginPath();
+              ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+              ctx.fillStyle = m.color;
+              ctx.fill();
+            });
+          }
+          requestAnimationFrame(animate);
+        }
+        animate();
+      }
+
+      const lofiStepDots = document.getElementById("lofi-step-dots");
+      const lofiQuestionCard = document.getElementById("lofi-question-card");
+      const lofiReadingCard = document.getElementById("lofi-reading-card");
+
+      function renderReadingIntoElement(containerEl) {
+        const syn = generateSynthesis();
+        if (!syn) {
+          containerEl.classList.add("hidden");
+          return;
+        }
+        containerEl.classList.remove("hidden");
+        containerEl.innerHTML = "";
+
+        const kicker = document.createElement("div");
+        kicker.style.fontSize = "0.78rem";
+        kicker.style.fontWeight = "700";
+        kicker.style.letterSpacing = "0.08em";
+        kicker.style.textTransform = "uppercase";
+        kicker.style.opacity = "0.75";
+        kicker.style.marginBottom = "0.35rem";
+        kicker.textContent = `Synthesized Archetype • ${syn.signatureCode}`;
+
+        const title = document.createElement("h2");
+        title.style.fontSize = "clamp(1.5rem, 3.5vw, 2.05rem)";
+        title.style.fontWeight = "700";
+        title.textContent = syn.archetypeTitle;
+
+        const badgesWrap = document.createElement("div");
+        badgesWrap.className = "syn-badges";
+        syn.badges.forEach((b) => {
+          const span = document.createElement("span");
+          span.className = "syn-badge";
+          span.textContent = b;
+          badgesWrap.appendChild(span);
+        });
+
+        const motto = document.createElement("div");
+        motto.className = "syn-motto";
+        motto.textContent = syn.motto;
+
+        const paraWrap = document.createElement("div");
+        paraWrap.className = "syn-paragraphs";
+        syn.paragraphs.forEach((pText) => {
+          const p = document.createElement("p");
+          p.textContent = pText;
+          paraWrap.appendChild(p);
+        });
+
+        const actions = document.createElement("div");
+        actions.className = "syn-actions";
+
+        const copyBtn = document.createElement("button");
+        copyBtn.type = "button";
+        copyBtn.className = "action-btn primary";
+        copyBtn.textContent = "Copy Profile Reading";
+        copyBtn.addEventListener("click", copySynthesisToClipboard);
+
+        const resetBtn = document.createElement("button");
+        resetBtn.type = "button";
+        resetBtn.className = "action-btn secondary";
+        resetBtn.textContent = "Try Another Combination";
+        resetBtn.addEventListener("click", () => {
+          resetAllAnswers();
+          if (state.experience === "lofi") renderLofiView();
+          else if (state.experience === "bento") renderBentoView();
+          showToast("Reset complete — explore a new path!");
+        });
+
+        actions.appendChild(copyBtn);
+        actions.appendChild(resetBtn);
+
+        containerEl.appendChild(kicker);
+        containerEl.appendChild(title);
+        containerEl.appendChild(badgesWrap);
+        containerEl.appendChild(motto);
+        containerEl.appendChild(paraWrap);
+        containerEl.appendChild(actions);
+      }
+
+      function renderLofiView() {
+        // Render 5 step dots
+        lofiStepDots.innerHTML = "";
+        QUESTIONS.forEach((_, idx) => {
+          const dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "lofi-step-dot";
+          if (idx === state.lofiActiveStep) dot.classList.add("active");
+          if (state.answers[idx] !== null) dot.classList.add("answered");
+          dot.textContent = String(idx + 1);
+          dot.title = `Question ${idx + 1}`;
+          dot.addEventListener("click", () => {
+            state.lofiActiveStep = idx;
+            saveState();
+            renderLofiView();
+          });
+          lofiStepDots.appendChild(dot);
+        });
+
+        // Render active question card
+        const qIdx = state.lofiActiveStep;
+        const q = QUESTIONS[qIdx];
+        lofiQuestionCard.innerHTML = "";
+
+        const stepLabel = document.createElement("span");
+        stepLabel.className = "lofi-kicker";
+        stepLabel.textContent = `Question 0${qIdx + 1} of 05`;
+
+        const title = document.createElement("h2");
+        title.className = "lofi-q-title";
+        title.textContent = q.prompt;
+
+        const choicesWrap = document.createElement("div");
+        choicesWrap.className = "lofi-choices";
+
+        q.choices.forEach((choiceText, cIdx) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "lofi-choice-pill";
+          if (state.answers[qIdx] === cIdx) btn.classList.add("selected");
+
+          const badge = document.createElement("span");
+          badge.className = "lofi-choice-num";
+          badge.textContent = String(cIdx + 1);
+
+          const spanText = document.createElement("span");
+          spanText.textContent = choiceText;
+
+          btn.appendChild(badge);
+          btn.appendChild(spanText);
+
+          btn.addEventListener("click", () => {
+            state.answers[qIdx] = cIdx;
+            if (qIdx < QUESTIONS.length - 1) {
+              state.lofiActiveStep = qIdx + 1;
+            }
+            saveState();
+            renderLofiView();
+            if (allQuestionsAnswered()) {
+              lofiReadingCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+          });
+
+          choicesWrap.appendChild(btn);
+        });
+
+        lofiQuestionCard.appendChild(stepLabel);
+        lofiQuestionCard.appendChild(title);
+        lofiQuestionCard.appendChild(choicesWrap);
+
+        // Render big reading if all 5 answered
+        renderReadingIntoElement(lofiReadingCard);
+      }
+
+      /* ----------------------------------------------------------------------
+         I. EXPERIENCE C: BENTO DARK OS VIEW
+         ---------------------------------------------------------------------- */
+      const bentoClock = document.getElementById("bento-clock");
+      const bentoDate = document.getElementById("bento-date");
+      const bentoProgressText = document.getElementById("bento-progress-text");
+      const bentoMatrix = document.getElementById("bento-matrix");
+      const bentoQaGrid = document.getElementById("bento-qa-grid");
+      const bentoReadingCard = document.getElementById("bento-reading-card");
+
+      function updateBentoClock() {
+        const now = new Date();
+        bentoClock.textContent = now.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit"
+        });
+        bentoDate.textContent = now.toLocaleDateString([], {
+          weekday: "long",
+          month: "short",
+          day: "numeric"
+        });
+      }
+
+      function renderBentoView() {
+        updateBentoClock();
+
+        const lockedCount = state.answers.filter((v) => v !== null).length;
+        bentoProgressText.textContent = `${lockedCount} / 5 Nodes Locked`;
+
+        const cells = bentoMatrix.querySelectorAll(".bento-matrix-cell");
+        cells.forEach((cell, idx) => {
+          cell.classList.toggle("filled", state.answers[idx] !== null);
+        });
+
+        bentoQaGrid.innerHTML = "";
+        QUESTIONS.forEach((q, qIdx) => {
+          const card = document.createElement("div");
+          card.className = "bento-card";
+
+          const tag = document.createElement("span");
+          tag.className = "bento-label";
+          tag.style.marginBottom = "0";
+          tag.textContent = `NODE 0${qIdx + 1}`;
+
+          const title = document.createElement("h3");
+          title.textContent = q.prompt;
+
+          card.appendChild(tag);
+          card.appendChild(title);
+
+          q.choices.forEach((choiceText, cIdx) => {
+            const tile = document.createElement("button");
+            tile.type = "button";
+            tile.className = "bento-choice-tile";
+            if (state.answers[qIdx] === cIdx) tile.classList.add("selected");
+
+            const idxTag = document.createElement("span");
+            idxTag.className = "bento-tile-idx";
+            idxTag.textContent = `0${cIdx + 1}`;
+
+            const txt = document.createElement("span");
+            txt.textContent = choiceText;
+
+            tile.appendChild(idxTag);
+            tile.appendChild(txt);
+
+            tile.addEventListener("click", () => {
+              state.answers[qIdx] = cIdx;
+              saveState();
+              renderBentoView();
+              if (allQuestionsAnswered()) {
+                bentoReadingCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+              }
+            });
+
+            card.appendChild(tile);
+          });
+
+          bentoQaGrid.appendChild(card);
+        });
+
+        renderReadingIntoElement(bentoReadingCard);
+      }
+
+      /* ----------------------------------------------------------------------
+         J. BOOT SEQUENCE
+         ---------------------------------------------------------------------- */
+      window.addEventListener("DOMContentLoaded", () => {
+        loadState();
+        initLofiCanvas();
+        setInterval(updateBentoClock, 1000);
+
+        if (state.hasChosenPortal) {
+          // Restore the saved view without attempting autoplay outside a user gesture.
+          switchExperience(state.experience, false);
+          portalOverlay.classList.add("hidden");
+        } else {
+          switchExperience(state.experience, false);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
